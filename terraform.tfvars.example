@@ -1,0 +1,24 @@
+# Copy to terraform.tfvars and edit. terraform.tfvars is git-ignored.
+#
+# Do NOT put the groundcover API key in this file. Export it instead:
+#   export TF_VAR_groundcover_api_key="<sensor ingestion key>"
+
+region       = "us-east-1"
+cluster_name = "gc-partner-demo"
+
+# Required: from the Ingestion Keys tab in the groundcover console
+groundcover_byoc_endpoint = "example.platform.grcv.io"
+groundcover_env           = "partner-demo"
+
+# Optional: named profile (e.g. AWS IAM Identity Center / SSO). Otherwise the
+# default credential chain is used (AWS_PROFILE, env vars, etc.).
+# aws_profile = "my-sso-profile"
+
+# Optional: assume a role for everything Terraform does.
+# assume_role_arn = "arn:aws:iam::123456789012:role/PartnerDemoAdmin"
+
+# Optional: teammates who should also get cluster-admin.
+# admin_principal_arns = ["arn:aws:iam::123456789012:role/Teammate"]
+
+# Recommended: restrict the public API endpoint to your IP.
+# endpoint_public_access_cidrs = ["203.0.113.10/32"]

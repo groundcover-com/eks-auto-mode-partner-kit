@@ -1,0 +1,15 @@
+# All values are supplied by Terraform (see flux.tf). Defaults exist only so
+# `helm template` works locally.
+
+groundcover:
+  chartVersion: ""
+  tokenSecret:
+    name: groundcover-api-key
+    key: API_KEY
+  site: ""
+  clusterId: ""
+  env: ""
+
+otelDemo:
+  chartVersion: ""
+  values: {}

@@ -1,0 +1,5 @@
+apiVersion: v2
+name: flux-apps
+description: Flux HelmRepository and HelmRelease objects for the groundcover partner kit
+type: application
+version: 0.1.0

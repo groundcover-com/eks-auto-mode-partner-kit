@@ -1,0 +1,46 @@
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: groundcover
+  namespace: {{ .Release.Namespace }}
+spec:
+  interval: 1h
+  url: https://helm.groundcover.com
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: groundcover
+  namespace: {{ .Release.Namespace }}
+spec:
+  interval: 10m
+  releaseName: groundcover
+  targetNamespace: groundcover
+  chart:
+    spec:
+      chart: groundcover
+      version: {{ required "groundcover.chartVersion is required" .Values.groundcover.chartVersion | quote }}
+      sourceRef:
+        kind: HelmRepository
+        name: groundcover
+  install:
+    timeout: 15m
+    remediation:
+      retries: 3
+  upgrade:
+    timeout: 15m
+    remediation:
+      retries: 3
+  # Sensor-only install reporting to an existing groundcover backend.
+  # The API key is read from a pre-created Secret, never from these values.
+  values:
+    global:
+      groundcoverPredefinedTokenSecret:
+        secretName: {{ .Values.groundcover.tokenSecret.name | quote }}
+        secretKey: {{ .Values.groundcover.tokenSecret.key | quote }}
+      backend:
+        enabled: false
+      ingress:
+        site: {{ required "groundcover.site is required" .Values.groundcover.site | quote }}
+    clusterId: {{ required "groundcover.clusterId is required" .Values.groundcover.clusterId | quote }}
+    env: {{ .Values.groundcover.env | quote }}

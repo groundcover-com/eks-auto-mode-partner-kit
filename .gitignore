@@ -1,0 +1,43 @@
+# Terraform / OpenTofu working directory and state
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.tfstate.lock.info
+
+# Saved plans (may contain sensitive values)
+*.tfplan
+tfplan
+plan.out
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Local settings: real values live here, only the .example is shared
+terraform.tfvars
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Local override files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Secrets and local env (e.g. TF_VAR_groundcover_api_key)
+.env
+.env.*
+.envrc
+
+# Kubeconfigs written during testing
+kubeconfig
+*.kubeconfig
+
+# Packaged Helm charts
+*.tgz
+
+# OS / editor noise
+.DS_Store
+.idea/
+.vscode/
+*.swp
