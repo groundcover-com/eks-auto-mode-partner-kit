@@ -233,6 +233,16 @@ aws sts get-caller-identity
 
 You should see your account number and identity ARN. That identity automatically becomes cluster admin on the new cluster.
 
+**Check the region has room.** The kit needs **1 VPC** and **1 Elastic IP** (for the NAT gateway). Shared demo accounts often hit both default limits of 5 per region. Check your region before you start:
+
+```bash
+REGION=us-east-1   # the region you plan to use
+echo "VPCs: $(aws ec2 describe-vpcs --region $REGION --query 'length(Vpcs)') of $(aws service-quotas get-service-quota --region $REGION --service-code vpc --quota-code L-F678F1CE --query Quota.Value)"
+echo "EIPs: $(aws ec2 describe-addresses --region $REGION --query 'length(Addresses)') of $(aws service-quotas get-service-quota --region $REGION --service-code ec2 --quota-code L-0263D0A3 --query Quota.Value)"
+```
+
+If either is at its limit, pick another region or request an increase in the **Service Quotas** console.
+
 ### Step 3: Get your groundcover values
 
 1. **Sensor ingestion key.** Use either:
@@ -399,12 +409,14 @@ If you use OpenTofu, run `TF=tofu ./scripts/destroy.sh`.
 
 | Symptom | Likely cause | Fix |
 |---|---|---|
+| `AddressLimitExceeded` or `VpcLimitExceeded` | The region is out of Elastic IPs or VPCs | Run `./scripts/destroy.sh`, then pick a region with room (Step 2) or request a quota increase |
 | `ExpiredToken` or `no valid credential sources` | AWS login expired | `aws sso login --profile <profile>`, or refresh your keys |
 | `terraform apply` asks for `var.groundcover_api_key` | Key not exported in this terminal | `export TF_VAR_groundcover_api_key=...` |
 | `Unauthorized` or `You must be logged in to the server` | You're signed in as a different AWS identity than the one that created the cluster | Switch back to that identity, or add yours to `admin_principal_arns` and re-apply from the original identity |
 | `aws: executable file not found` during apply | AWS CLI not on `PATH` | Install the AWS CLI v2 (Section 4) |
 | `groundcover` HelmRelease stuck `False` | Wrong BYOC endpoint, or an invalid key | `kubectl -n flux-system describe helmrelease groundcover` and `kubectl -n groundcover get pods`. Check the endpoint is a hostname only, re-export the key, bump `groundcover_api_key_revision` and re-apply |
 | `otel-demo` says the dependency is not ready | groundcover is still rolling out | Wait. It continues by itself once groundcover is Ready |
+| A DaemonSet pod (e.g. a profiler or agent you added) stays `Pending` with `Insufficient memory` | Auto Mode never adds nodes for DaemonSet pods, so a DaemonSet that arrives after nodes are full can't fit | Give it `priorityClassName: system-node-critical` so it can evict a regular pod, which Auto Mode reschedules onto a new node. The included otel-demo profiler already has this |
 | Pods stuck `Pending` for a few minutes | Auto Mode is launching a node | Wait 1 to 3 minutes. `kubectl get nodeclaims` shows progress |
 | Cluster doesn't show in groundcover | Sensor can't reach the backend | `kubectl -n groundcover logs -l app.kubernetes.io/name=sensor --tail=50` |
 | Destroy hangs deleting the VPC or a subnet | A load balancer or network interface was left behind | In the EC2 console, delete load balancers and "available" network interfaces tagged with the cluster name, then run `./scripts/destroy.sh` again |

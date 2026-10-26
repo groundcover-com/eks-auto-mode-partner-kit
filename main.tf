@@ -86,6 +86,11 @@ module "eks" {
 
   vpc_id     = module.vpc.vpc_id
   subnet_ids = module.vpc.private_subnets
+
+  # Nodes in private subnets need the NAT gateway to pull images. Without this,
+  # a failed NAT/EIP (e.g. AddressLimitExceeded) still lets the cluster build and
+  # only surfaces 15 minutes later as a Helm "context deadline exceeded".
+  depends_on = [module.vpc]
 }
 
 ################################################################################

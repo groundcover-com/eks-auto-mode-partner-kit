@@ -8,6 +8,10 @@ opentelemetry-collector:
 
 otel-ebpf-profiler:
   enabled: true
+  # EKS Auto Mode packs nodes before this DaemonSet exists and never adds
+  # capacity for DaemonSet pods, so without a high priority some profiler pods
+  # stay Pending. This lets them evict a regular pod, which reschedules elsewhere.
+  priorityClassName: system-node-critical
   presets:
     kubernetesAttributes:
       enabled: true          # RBAC + K8S_NODE_NAME env only; processor is defined below
