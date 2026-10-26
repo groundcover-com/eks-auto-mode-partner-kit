@@ -4,6 +4,10 @@
 *.tfstate.*
 .terraform.tfstate.lock.info
 
+# Provider lock file: Terraform and OpenTofu write different registry entries,
+# so each user generates their own with `init`
+.terraform.lock.hcl
+
 # Saved plans (may contain sensitive values)
 *.tfplan
 tfplan

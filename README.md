@@ -197,10 +197,9 @@ While it runs, this environment bills for:
 
 ### Step 1: Get the kit
 
-Copy this directory to your machine and open a terminal in it:
-
 ```bash
-cd tf-kit
+git clone https://github.com/groundcover-com/eks-auto-mode-partner-kit.git
+cd eks-auto-mode-partner-kit
 ```
 
 ### Step 2: Sign in to AWS
