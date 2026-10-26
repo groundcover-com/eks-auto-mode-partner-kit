@@ -11,6 +11,8 @@ This kit builds a complete, observable Kubernetes demo environment in your own A
 
 Plan on about **25 minutes** end to end, most of it waiting on AWS.
 
+> **Using an AI assistant?** Point it at [AGENTS.md](AGENTS.md) (Claude Code loads it automatically through `CLAUDE.md`). It has preflight checks, the expected rollout states, and how to handle the API key safely.
+
 ---
 
 ## Contents
@@ -436,6 +438,8 @@ kubectl -n flux-system logs deploy/helm-controller --tail=50
 ```
 .
 ├── README.md                     This file
+├── AGENTS.md                     Guide for AI assistants (CLAUDE.md imports it)
+├── LICENSE                       Apache License 2.0
 ├── versions.tf                   Terraform and provider version pins
 ├── providers.tf                  AWS auth; Kubernetes/Helm auth via `aws eks get-token`
 ├── variables.tf                  Every setting, with descriptions and defaults
@@ -452,3 +456,9 @@ kubectl -n flux-system logs deploy/helm-controller --tail=50
 └── scripts/
     └── destroy.sh                Safe teardown
 ```
+
+---
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
